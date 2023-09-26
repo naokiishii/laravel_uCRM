@@ -1,0 +1,151 @@
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head, Link } from '@inertiajs/vue3';
+import { onMounted, reactive, ref, computed } from 'vue';
+import { Inertia } from '@inertiajs/inertia';
+import dayjs from "dayjs"
+import InputError from '@/Components/InputError.vue';
+
+const props = defineProps({
+    'items': Array,
+    'order': Array,
+    errors: Object
+});
+
+onMounted(() => {
+    console.log(props.items);
+    console.log(props.order);
+})
+
+</script>
+
+<template>
+    <Head title="Purchase History Details" />
+
+    <AuthenticatedLayout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Purchase Item</h2>
+        </template>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <section class="text-gray-600 body-font relative">
+                            <form @submit.prevent="storePurchase">
+                                <div class="container px-5 py-24 mx-auto">
+                                    <div class="lg:w-1/2 md:w-2/3 mx-auto">
+                                        <div class="flex flex-wrap -m-2">
+                                            <div class="p-2 w-full">
+                                                <div class="relative">
+                                                    <label for="date" class="leading-7 text-sm text-gray-600">
+                                                        Date</label>
+                                                    <div id="date" name="date"
+                                                        class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                        {{ dayjs(props.order[0].created_at).format(YYYY-MM-DD) }}</div>
+                                                    <InputError class="mt-2" :message="errors.name" />
+                                                </div>
+                                            </div>
+                                            <div class="p-2 w-full">
+                                                <div class="relative">
+                                                    <label for="customer" class="leading-7 text-sm text-gray-600">Customer
+                                                    </label>
+                                                    <div id="date" name="date"
+                                                        class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                        {{ props.order[0].customer_name }}</div>
+                                                    <InputError class="mt-2" :message="errors.name" />
+                                                </div>
+                                            </div>
+                                            <div class="w-full mt-8 mx-auto overflow-auto">
+                                                <table class="table-auto w-full text-left whitespace-no-wrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th
+                                                                class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
+                                                                ID</th>
+                                                            <th
+                                                                class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                                                Item Name</th>
+                                                            <th
+                                                                class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                                                Item Price</th>
+                                                            <th
+                                                                class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                                                Quantity</th>
+                                                            <th
+                                                                class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                                                Sum</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="item in props.items" :key="item.id">
+                                                            <td class="border-b-2 border-gray-200 px-4 py-3">
+                                                                {{ item.item_id }}
+                                                            </td>
+                                                            <td class="border-b-2 border-gray-200 px-4 py-3">{{
+                                                                item.item_name }}
+                                                            </td>
+                                                            <td class="border-b-2 border-gray-200 px-4 py-3">{{
+                                                                item.item_price
+                                                            }}</td>
+                                                            <td class="border-b-2 border-gray-200 px-4 py-3">{{
+                                                                item.quantity }}
+                                                            </td>
+                                                            <td class="border-b-2 border-gray-200 px-4 py-3">
+                                                                {{ item.subtotal }}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="p-2 w-full">
+                                                <div class="">
+                                                    <label for="price" class="leading-7 text-sm text-gray-600">Total
+                                                        Price</label><br>
+                                                    <div
+                                                        class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                        {{ props.order[0].total }}JPY</div>
+                                                    <InputError class="mt-2" :message="errors.price" />
+                                                </div>
+                                            </div>
+                                            <div class="p-2 w-full">
+                                                <div class="">
+                                                    <label for="price" class="leading-7 text-sm text-gray-600">Total
+                                                        Status</label><br>
+                                                    <div v-if="props.order[0].status == true"
+                                                        class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                        Not Cancelled</div>
+                                                    <InputError class="mt-2" :message="errors.price" />
+                                                    <div v-if="props.order[0].status == false"
+                                                        class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                        Cancelled</div>
+                                                    <InputError class="mt-2" :message="errors.price" />
+                                                </div>
+                                            </div>
+                                            <div class="p-2 w-full">
+                                                <div class="">
+                                                    <label for="price" class="leading-7 text-sm text-gray-600">Total
+                                                        Cancel Date</label><br>
+                                                    <div v-if="props.order[0].status == false"
+                                                        class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                                        {{ dayjs(props.order[0].updated_date).format('YYYY/MM/DD') }}</div>
+                                                    <InputError class="mt-2" :message="errors.price" />
+                                                </div>
+                                            </div>
+                                            <div v-if="props.order[0].status == true" class="p-2 w-full">
+                                                <Link as="button"
+                                                    :href="route('purchases.edit', { purchase: props.order[0].id })"
+                                                    class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+                                                Edit
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</AuthenticatedLayout></template>

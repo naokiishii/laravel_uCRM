@@ -35,6 +35,9 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('items.index')" :active="route().current('items.index')">
                                     Item Management
                                 </NavLink>
+                                <NavLink :href="route('purchases.index')" :active="route().current('purchases.index')">
+                                    Purchase History
+                                </NavLink>
                                 <NavLink :href="route('customers.index')" :active="route().current('customers.index')">
                                     Customer Management
                                 </NavLink>
@@ -126,6 +129,9 @@ const showingNavigationDropdown = ref(false);
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('items.index')" :active="route().current('items.index')">
                             Item Management
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('purchases.index')" :active="route().current('purchases.index')">
+                            Purchase History
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('customers.index')" :active="route().current('customers.index')">
                             Customer Management
