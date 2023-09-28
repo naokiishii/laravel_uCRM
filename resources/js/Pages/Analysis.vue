@@ -5,6 +5,7 @@ import { onMounted, reactive } from 'vue';
 import { getToday } from '@/common';
 import axios from 'axios';
 import Chart from '@/Components/Chart.vue';
+import ResultTable from '@/Components/ResultTable.vue';
 
 onMounted(() => {
     form.startDate = getToday();
@@ -31,6 +32,7 @@ const getData = async () => {
             data.data = res.data.data;
             data.labels = res.data.labels;
             data.totals = res.data.totals;
+            data.type = res.data.type;
             console.log(data);
         })
     } catch (e) {
@@ -52,36 +54,25 @@ const getData = async () => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="getData">
+                            Analysis Period<br>
+                            <input type="radio" v-model="form.type" value="perDay" checked><span class="mr-2">daily</span>
+                            <input type="radio" v-model="form.type" value="perMonth"><span
+                                class="mr-2">Monthly</span>
+                            <input type="radio" v-model="form.type" value="perYear"><span class="mr-2">Yearly</span>
+                            <input type="radio" v-model="form.type" value="decile"><span class="mr-2">Decile Analysis</span>
+                            <br>
                             From: <input type="date" name="startDate" v-model="form.startDate">
                             To: <input type="date" name="endDate" v-model="form.endDate"><br>
                             <button
                                 class="mt-4 flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Analyze</button>
                         </form>
                         <div v-show="data.data">
-                        <Chart :data="data" />
-                        </div>
-                        <div v-show="data.data" class="lg:w-2/3 w-full mx-auto overflow-auto">
-                            <table class="table-auto w-full text-left whitespace-no-wrap">
-                                <thead>
-                                    <tr>
-                                        <th
-                                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
-                                            Date</th>
-                                        <th
-                                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                            Total Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="item in data.data" :key="item.endDate">
-                                        <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.date }}</td>
-                                        <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.total }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <Chart :data="data" />
+                            <ResultTable :data="data" />
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
-</AuthenticatedLayout></template>
+    </AuthenticatedLayout>
+</template>
